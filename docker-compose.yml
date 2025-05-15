@@ -1,0 +1,13 @@
+version: "3.3"
+
+services:
+  app:
+    build: .
+    environment:
+      DB_HOST: 141.148.221.98
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: scan-fi-prod
+    ports:
+      - "8080:8080"
