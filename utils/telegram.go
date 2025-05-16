@@ -18,11 +18,25 @@ func SendToTelegram(message string) {
 
 	http.PostForm(endpoint, data)
 }
+func getServerName() string {
+	serverName := os.Getenv("RENDER_SERVICE_NAME")
+	if serverName == "" {
+		serverName = os.Getenv("SERVER_NAME")
+	}
+	if serverName == "" {
+		serverName = "unknown"
+	}
+	return serverName
+}
+
 func LogError(tag string, err error) {
 	if err != nil {
-		SendToTelegram(fmt.Sprintf("❌ [%s] %v", tag, err))
+		serverName := getServerName()
+		SendToTelegram(fmt.Sprintf("❌ [%s][%s] %v", tag, serverName, err))
 	}
 }
+
 func LogInfo(tag string, message string) {
-	SendToTelegram(fmt.Sprintf("✅ [%s] %s", tag, message))
+	serverName := getServerName()
+	SendToTelegram(fmt.Sprintf("✅ [%s][%s] %s", tag, serverName, message))
 }

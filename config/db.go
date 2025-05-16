@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"com.faisalkc/utils"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -13,6 +14,12 @@ import (
 var DB *gorm.DB
 
 func ConnectDatabase() {
+	if os.Getenv("RENDER") == "" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
+	}
 
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")
