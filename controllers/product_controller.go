@@ -100,7 +100,11 @@ func SearchProductByBarcode(c *gin.Context) {
 	var product models.Product
 
 	// Try to find existing product
-	err := config.DB.Where("barcode = ?", id).First(&product).Error
+	err := config.DB.
+		Preload("Brand").
+		Preload("Ingredients").
+		Preload("Additives").
+		Where("barcode = ?", id).First(&product).Error
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
