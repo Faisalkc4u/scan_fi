@@ -98,12 +98,34 @@ func DeleteProduct(c *gin.Context) {
 func SearchProductByBarcode(c *gin.Context) {
 	id := c.Param("barcode")
 	var product models.Product
-	if err := config.DB.Where("barcode = ?", id).First(&product).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Product not found"})
-		utils.LogInfo("Product not found", " Barcode: "+id)
+
+	// Try to find existing product
+	err := config.DB.Where("barcode = ?", id).First(&product).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			// Create new placeholder product
+			product = models.Product{
+				Barcode:        id,
+				NumberOfSearch: 1,
+			}
+			if err := config.DB.Create(&product).Error; err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to create new product"})
+				utils.LogError("Failed to create placeholder product", err)
+				return
+			}
+			utils.LogInfo("Placeholder product created", " Barcode: "+id)
+			c.JSON(http.StatusOK, product)
+			return
+		}
+
+		// Other DB error
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Database error"})
+		utils.LogError("Database error", err)
 		return
 	}
-	// before returning the product, update the search count
+
+	// Product found — increment search count
 	product.NumberOfSearch++
 	config.DB.Save(&product)
 	c.JSON(http.StatusOK, product)
