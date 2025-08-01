@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"com.faisalkc/config"
 	"com.faisalkc/models"
 	"com.faisalkc/routes"
@@ -14,5 +16,9 @@ func main() {
 
 	r := gin.Default()
 	routes.RegisterRoutes(r)
-	r.Run(":8000")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8000"
+	}
+	r.Run(":" + port)
 }
