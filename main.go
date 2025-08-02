@@ -10,6 +10,7 @@ import (
 )
 
 func main() {
+
 	gin.SetMode(gin.ReleaseMode)
 	config.ConnectDatabase()
 	config.DB.AutoMigrate(&models.Product{})

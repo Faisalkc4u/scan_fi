@@ -1,13 +1,10 @@
-version: "3.3"
-
+version: "3.8"
 services:
-  app:
+  api:
     build: .
-    environment:
-      DB_HOST: 141.148.221.98
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: scan-fi-prod
+    image: my-go-app:latest
+    env_file:
+      - .env
     ports:
-      - "8080:8080"
+      - "8000:8000"
+    restart: unless-stopped
