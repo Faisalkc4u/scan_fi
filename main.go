@@ -14,6 +14,11 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	config.ConnectDatabase()
 	config.DB.AutoMigrate(&models.Product{})
+	config.DB.AutoMigrate(&models.Manufacturer{})
+	config.DB.AutoMigrate(&models.Ingredient{})
+	config.DB.AutoMigrate(&models.Additive{})
+	config.DB.AutoMigrate(&models.ProductIngredient{})
+	config.DB.AutoMigrate(&models.ProductAdditive{})
 
 	r := gin.Default()
 	routes.RegisterRoutes(r)
