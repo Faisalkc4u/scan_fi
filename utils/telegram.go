@@ -16,7 +16,12 @@ func SendToTelegram(message string) {
 	data.Set("chat_id", chatID)
 	data.Set("text", message)
 
-	http.PostForm(endpoint, data)
+	resp, err := http.PostForm(endpoint, data)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to send message to Telegram: %v\n", err)
+		return
+	}
+	defer resp.Body.Close()
 }
 func getServerName() string {
 	serverName := os.Getenv("RENDER_SERVICE_NAME")
